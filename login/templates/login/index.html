@@ -1,0 +1,252 @@
+{% load static %}
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>这是一个实验平台</title>
+  <link  href="{% static 'login/css/index.css' %}" rel="stylesheet"/>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+  <script src="../../static/login/js/echarts.min.js"></script>
+</head>
+<body>
+  <div class="container">
+	<form action="" method="post">
+	{% csrf_token %}
+    <div class="second_page" id="page2" ></div>
+	<div class="left_options">
+        <div class="left_option">
+          <div class="option_name">原始波形选择：</div>
+          <div class="option_content">
+            <select name="opt1" id="opt1">
+              <option value="1">余弦波</option>
+              <option value="2">正弦波</option>
+            </select>
+          </div>
+        </div>
+        <div class="left_option">
+          <div class="option_name">自选匹配滤波波形选择：</div>
+          <div class="option_content">
+            <select name="opt2" id="opt2">
+              <option value="1">余弦波</option>
+              <option value="2">正弦波</option>
+            </select>
+          </div>
+        </div>
+        <div class="left_option">
+          <div class="option_name">匹配滤波采样时间</div>
+          <div class="option_content">
+            <input id="input_time" id="input_time" type="text">
+          </div>
+        </div>
+        <button class="submit" onclick="showChart()">生成</button>
+	</form>
+        <br></br>
+        <br></br>
+        <div id="footer" style="background-color:#FFA500;clear:both;text-align:center; height: 20">
+ <a href="/logout/" style="font-size: 16px;">登出</a></div>
+      </div>
+      <div class="right_charts">
+        <div class="chart_box">
+          <div class="chart_title">输入信号波形</div>
+          <div class="chart_graph" id="chart1"></div>
+        </div>
+        <div class="chart_box">
+          <div class="chart_title">输出信号波形</div>
+          <div class="chart_graph" id="chart2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function showChart(){
+    	var myChart1 = echarts.init(document.getElementById('chart1'));
+    var myChart2 = echarts.init(document.getElementById('chart2'));
+    var page2 = document.getElementById('page2');
+    var opt1 = document.getElementById('opt1');
+    var opt2 = document.getElementById('opt2');
+    var slogan1= opt1.selectedIndex;
+    var slogan2= opt1.selectedIndex;
+    var t0 = document.getElementById('input_time');
+    var option1 = null;
+    var option2 = null;
+    function func1(x) {
+        return Math.cos(x)
+    }
+    function generateData1() {
+      let data = [];
+      for (let i = -200; i <= 200; i += 0.1) {
+        data.push([i, func1(i)]);
+      }
+      return data;
+    }
+    function func2(x) {
+        return Math.sin(x)
+    }
+    function generateData2() {
+      let data = [];
+      for (let i = -200; i <= 200; i += 0.1) {
+        data.push([i, func2(i)]);
+      }
+      return data;
+    }
+    myChart1.clear();
+    myChart2.clear();
+    if(opt1.options[slogan1].value==1){
+      option1 = {
+      animation: true,
+      grid: {
+        top: 40,
+        left: 50,
+        right: 40,
+        bottom: 50
+      },
+      xAxis: {
+        name: 'x',
+        minorTick: {
+          show: true
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#999'
+          }
+        },
+        minorSplitLine: {
+          show: true,
+          lineStyle: {
+            color: '#ddd'
+          }
+        }
+      },
+      yAxis: {
+        name: 'y',
+        min: -100,
+        max: 100,
+        minorTick: {
+          show: true
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#999'
+          }
+        },
+        minorSplitLine: {
+          show: true,
+          lineStyle: {
+            color: '#ddd'
+          }
+        }
+      },
+      dataZoom: [{
+        show: true,
+        type: 'inside',
+        filterMode: 'none',
+        xAxisIndex: [0],
+        startValue: -20,
+        endValue: 20
+      }, {
+        show: true,
+        type: 'inside',
+        filterMode: 'none',
+        yAxisIndex: [0],
+        startValue: -2,
+        endValue: 2
+      }],
+      series: [
+        {
+          type: 'line',
+          showSymbol: false,
+          clip: true,
+          data: generateData1()
+        }
+      ]
+    };
+    option2 = option1;
+    myChart1.setOption(option1, true);
+    myChart2.setOption(option2, true);
+      window.addEventListener("resize",function() {
+        myChart1.resize();
+        myChart2.resize();
+      });
+    }	
+    if(opt1.options[slogan1].value==2){
+      option1 = {
+      animation: true,
+      grid: {
+        top: 40,
+        left: 50,
+        right: 40,
+        bottom: 50
+      },
+      xAxis: {
+        name: 'x',
+        minorTick: {
+          show: true
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#999'
+          }
+        },
+        minorSplitLine: {
+          show: true,
+          lineStyle: {
+            color: '#ddd'
+          }
+        }
+      },
+      yAxis: {
+        name: 'y',
+        min: -100,
+        max: 100,
+        minorTick: {
+          show: true
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#999'
+          }
+        },
+        minorSplitLine: {
+          show: true,
+          lineStyle: {
+            color: '#ddd'
+          }
+        }
+      },
+      dataZoom: [{
+        show: true,
+        type: 'inside',
+        filterMode: 'none',
+        xAxisIndex: [0],
+        startValue: -20,
+        endValue: 20
+      }, {
+        show: true,
+        type: 'inside',
+        filterMode: 'none',
+        yAxisIndex: [0],
+        startValue: -2,
+        endValue: 2
+      }],
+      series: [
+        {
+          type: 'line',
+          showSymbol: false,
+          clip: true,
+          data: generateData2()
+        }
+      ]
+    };
+    option2 = option1;
+    myChart1.setOption(option1, true);
+    myChart2.setOption(option2, true);
+      window.addEventListener("resize",function() {
+        myChart1.resize();
+        myChart2.resize();
+      });
+    }
+    }
+
+  </script>
+</body>
